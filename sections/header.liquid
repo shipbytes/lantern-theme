@@ -3,7 +3,7 @@
   search, account and cart icons. `cart.item_count` is live on every page because the
   cart is part of the request; the drawer that opens from the icon comes in part 4.
 {%- endcomment -%}
-<header class="bg-ground border-b border-line {% if section.settings.sticky %}sticky top-0 z-40{% endif %}">
+<header class="bg-ground border-b border-line {% if section.settings.sticky %}sticky top-0 z-40{% endif %}" data-header-section="{{ section.id }}">
   <div class="wrap flex items-center justify-between gap-4 h-[72px]">
     <a href="{{ routes.root_url }}" class="font-heading font-extrabold text-[22px] tracking-tight">
       {%- if section.settings.logo != blank -%}
@@ -27,7 +27,7 @@
       {%- if shop.customer_accounts_enabled -%}
         <a href="{{ routes.account_url }}" class="icon-btn" aria-label="{{ 'customer.account.title' | t }}">{% render 'icon', name: 'account' %}</a>
       {%- endif -%}
-      <a href="{{ routes.cart_url }}" class="icon-btn" aria-label="{{ 'cart.general.title' | t }}, {{ 'cart.general.item_count' | t: count: cart.item_count }}">
+      <a href="{{ routes.cart_url }}" class="icon-btn" data-cart-link aria-label="{{ 'cart.general.title' | t }}, {{ 'cart.general.item_count' | t: count: cart.item_count }}">
         {% render 'icon', name: 'cart' %}
         <span class="absolute top-1 right-1 min-w-[18px] h-[18px] px-1.5 rounded-full bg-accent text-on-accent text-[11px] font-semibold flex items-center justify-center {% if cart.item_count == 0 %}hidden{% endif %}" data-cart-count>{{ cart.item_count }}</span>
       </a>

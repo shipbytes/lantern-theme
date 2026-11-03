@@ -1,6 +1,7 @@
 {
   "accessibility": {
-    "skip_to_content": "Skip to content"
+    "skip_to_content": "Skip to content",
+    "close": "Close"
   },
   "general": {
     "navigation": {
@@ -50,7 +51,13 @@
       "continue": "Continue shopping",
       "subtotal": "Subtotal",
       "checkout": "Checkout",
-      "taxes_and_shipping": "Tax included. Shipping calculated at checkout."
+      "taxes_and_shipping": "Tax included. Shipping calculated at checkout.",
+      "view_cart": "View cart",
+      "remove": "Remove",
+      "added": "Added to cart: {{ title }}",
+      "updated": "Cart updated, {{ count }} items",
+      "decrease": "Decrease quantity of {{ title }}",
+      "increase": "Increase quantity of {{ title }}"
     }
   },
   "products": {

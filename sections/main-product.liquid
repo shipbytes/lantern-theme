@@ -1,17 +1,19 @@
 {%- comment -%}
   The product page. Part 2: the gallery from product.media, the price snippet, a variant
   picker rendered from product.options_with_values, quantity and the add-to-cart form, and
-  the description in accordions. Switching variants without a reload is part 4; until then
-  the form posts the first available variant, and the picker is links to each variant.
+  the description in accordions. Part 4: the picker and the form are progressively enhanced
+  by <variant-picker> and <product-form> in assets/theme.js. The data-swap regions are what
+  the Section Rendering API replaces when the variant changes; without JavaScript the picker
+  is still links and the form still posts to /cart/add.
 {%- endcomment -%}
 {%- liquid
   assign current = product.selected_or_first_available_variant
   assign images = product.media | where: 'media_type', 'image'
   assign featured = current.featured_media | default: product.featured_media
 -%}
-<section class="wrap py-8 grid gap-12 md:grid-cols-[7fr_5fr] items-start" id="MainProduct">
+<section class="wrap py-8 grid gap-12 md:grid-cols-[7fr_5fr] items-start" id="MainProduct" data-section-id="{{ section.id }}" data-product-url="{{ product.url }}" data-featured-media="{{ featured.id }}">
   <div class="grid gap-4 md:grid-cols-[88px_minmax(0,1fr)]">
-    <div class="order-2 md:order-1 flex md:flex-col gap-2.5 overflow-x-auto">
+    <div class="order-2 md:order-1 flex md:flex-col gap-2.5 overflow-x-auto" data-swap="thumbs">
       {%- for media in images -%}
         <a href="#media-{{ media.id }}" class="block shrink-0 w-[72px] md:w-full aspect-square rounded-[10px] overflow-hidden bg-ground-2 border-2 {% if media.id == featured.id %}border-ink{% else %}border-transparent{% endif %}" aria-label="Image {{ forloop.index }} of {{ images.size }}">
           {{ media | image_url: width: 180 | image_tag: class: 'w-full h-full object-cover', widths: '90, 180', sizes: '88px', loading: 'lazy' }}
@@ -44,10 +46,12 @@
       <h1 class="text-[34px] leading-tight font-extrabold">{{ product.title }}</h1>
       {%- if product.vendor != blank and product.vendor != shop.name -%}<p class="text-sm text-ink-2">{{ 'products.product.vendor' | t: vendor: product.vendor }}</p>{%- endif -%}
     </div>
-    <p>{% render 'price', variant: current, size: 'lg' %} <span class="text-[13px] text-ink-2">&middot; {{ 'products.product.tax_note' | t }}</span></p>
+    <p data-swap="price">{% render 'price', variant: current, size: 'lg' %} <span class="text-[13px] text-ink-2">&middot; {{ 'products.product.tax_note' | t }}</span></p>
 
+    <product-form data-add-url="{{ routes.cart_add_url }}.js">
     {%- form 'product', product, class: 'flex flex-col gap-5', id: 'ProductForm' -%}
       {%- unless product.has_only_default_variant -%}
+        <variant-picker class="flex flex-col gap-5" data-swap="picker">
         {%- for option in product.options_with_values -%}
           <fieldset class="flex flex-col gap-2.5 border-0 p-0 m-0">
             <legend class="text-sm font-semibold mb-2.5">{{ option.name }}: <span class="font-normal text-ink-2">{{ option.selected_value }}</span></legend>
@@ -62,18 +66,19 @@
                   endif
                 -%}
                 {%- if swatch -%}
-                  <a href="{{ href }}" class="block w-9 h-9 rounded-full border-2 {% if value.selected %}border-ground shadow-[0_0_0_2px_var(--lantern-ink)]{% else %}border-transparent shadow-[0_0_0_1px_var(--lantern-line)]{% endif %} {% unless value.available %}opacity-40{% endunless %}" style="background: {{ swatch.color | default: '#ddd' }}" aria-label="{{ value }}{% unless value.available %}, {{ 'products.product.sold_out' | t }}{% endunless %}" {% if value.selected %}aria-current="true"{% endif %}></a>
+                  <a href="{{ href }}" data-option-value-id="{{ value.id }}" class="block w-9 h-9 rounded-full border-2 {% if value.selected %}border-ground shadow-[0_0_0_2px_var(--lantern-ink)]{% else %}border-transparent shadow-[0_0_0_1px_var(--lantern-line)]{% endif %} {% unless value.available %}opacity-40{% endunless %}" style="background: {{ swatch.color | default: '#ddd' }}" aria-label="{{ value }}{% unless value.available %}, {{ 'products.product.sold_out' | t }}{% endunless %}" {% if value.selected %}aria-current="true"{% endif %}></a>
                 {%- else -%}
-                  <a href="{{ href }}" class="min-h-11 px-4 inline-flex items-center rounded-full border text-sm font-medium {% if value.selected %}bg-ink text-ground border-ink{% else %}bg-white border-line hover:border-ink{% endif %} {% unless value.available %}line-through text-ink-2{% endunless %}" {% if value.selected %}aria-current="true"{% endif %}>{{ value }}</a>
+                  <a href="{{ href }}" data-option-value-id="{{ value.id }}" class="min-h-11 px-4 inline-flex items-center rounded-full border text-sm font-medium {% if value.selected %}bg-ink text-ground border-ink{% else %}bg-white border-line hover:border-ink{% endif %} {% unless value.available %}line-through text-ink-2{% endunless %}" {% if value.selected %}aria-current="true"{% endif %}>{{ value }}</a>
                 {%- endif -%}
               {%- endfor -%}
             </div>
           </fieldset>
         {%- endfor -%}
+        </variant-picker>
       {%- endunless -%}
-      <input type="hidden" name="id" value="{{ current.id }}">
+      <input type="hidden" name="id" value="{{ current.id }}" data-swap="variant-id">
 
-      <div class="flex flex-wrap gap-3 items-stretch">
+      <div class="flex flex-wrap gap-3 items-stretch" data-swap="buy">
         <div class="inline-flex items-center rounded-full border border-line bg-white">
           <label for="Quantity" class="sr-only">{{ 'products.product.quantity' | t }}</label>
           <input id="Quantity" type="number" name="quantity" value="1" min="1" class="w-16 min-h-11 text-center bg-transparent font-semibold">
@@ -82,11 +87,15 @@
           {%- if current.available -%}{{ 'products.product.add_to_cart' | t }} &middot; {{ current.price | money }}{%- else -%}{{ 'products.product.sold_out' | t }}{%- endif -%}
         </button>
       </div>
+      <p class="text-sm text-[#B42318] hidden" role="alert" data-form-error></p>
     {%- endform -%}
+    </product-form>
 
-    {%- if current.available -%}
-      <p class="text-[13px] text-accent font-medium flex items-center gap-2">{% render 'icon', name: 'check' %}{{ 'products.product.in_stock' | t }}</p>
-    {%- endif -%}
+    <div data-swap="stock">
+      {%- if current.available -%}
+        <p class="text-[13px] text-accent font-medium flex items-center gap-2">{% render 'icon', name: 'check' %}{{ 'products.product.in_stock' | t }}</p>
+      {%- endif -%}
+    </div>
 
     <div class="flex flex-col border-b border-line">
       <details class="border-t border-line group" open>

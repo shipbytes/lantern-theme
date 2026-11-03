@@ -1,0 +1,61 @@
+{%- comment -%}
+  The cart drawer. Rendered once from layout/theme.liquid with {% section 'cart-drawer' %},
+  so its section id is simply "cart-drawer", which is what the Cart API's `sections`
+  parameter is asked for after every add or change. Everything inside <cart-drawer> is
+  replaced wholesale with the HTML Shopify sends back; the drawer never computes a total.
+{%- endcomment -%}
+<cart-drawer data-change-url="{{ routes.cart_change_url }}.js">
+  <dialog id="CartDrawer" class="fixed inset-y-0 right-0 left-auto m-0 h-dvh max-h-none w-full max-w-[440px] bg-ground text-ink p-0 shadow-2xl backdrop:bg-ink/40 open:flex flex-col" aria-labelledby="CartDrawerTitle">
+    <div class="flex items-center justify-between px-6 h-[72px] border-b border-line shrink-0">
+      <h2 id="CartDrawerTitle" class="text-xl font-bold">{{ 'cart.general.title' | t }} <span class="text-ink-2 font-normal">({{ cart.item_count }})</span></h2>
+      <button type="button" class="icon-btn" data-drawer-close aria-label="{{ 'accessibility.close' | t }}">{% render 'icon', name: 'close' %}</button>
+    </div>
+
+    {%- if cart.item_count == 0 -%}
+      <div class="flex-1 flex flex-col items-center justify-center gap-4 p-6 text-center">
+        <p class="text-ink-2">{{ 'cart.general.empty' | t }}</p>
+        <button type="button" class="btn btn-ghost" data-drawer-close>{{ 'cart.general.continue' | t }}</button>
+      </div>
+    {%- else -%}
+      <ul class="flex-1 overflow-y-auto divide-y divide-line px-6" role="list" data-drawer-items>
+        {%- for item in cart.items -%}
+          <li class="grid grid-cols-[72px_1fr] gap-4 py-4" data-line="{{ forloop.index }}">
+            <a href="{{ item.url }}" class="aspect-square rounded-[10px] overflow-hidden bg-ground-2 block">
+              {%- if item.image -%}{{ item.image | image_url: width: 160 | image_tag: class: 'w-full h-full object-cover', widths: '80, 160', sizes: '72px' }}{%- endif -%}
+            </a>
+            <div class="flex flex-col gap-1 min-w-0">
+              <div class="flex justify-between gap-3">
+                <a href="{{ item.url }}" class="font-semibold leading-snug">{{ item.product.title }}</a>
+                <span class="font-semibold shrink-0">{{ item.final_line_price | money }}</span>
+              </div>
+              {%- unless item.product.has_only_default_variant -%}<span class="text-sm text-ink-2">{{ item.variant.title }}</span>{%- endunless -%}
+              {%- if item.original_line_price != item.final_line_price -%}<s class="text-sm text-ink-2">{{ item.original_line_price | money }}</s>{%- endif -%}
+              <div class="flex items-center gap-3 mt-2">
+                <quantity-input class="inline-flex items-center rounded-full border border-line bg-white">
+                  <button type="button" class="w-10 min-h-10 font-semibold" data-quantity-step="-1" aria-label="{{ 'cart.general.decrease' | t: title: item.product.title }}">&minus;</button>
+                  <label class="sr-only" for="Quantity-{{ forloop.index }}">{{ 'products.product.quantity' | t }}</label>
+                  <input id="Quantity-{{ forloop.index }}" type="number" value="{{ item.quantity }}" min="0" class="w-10 min-h-10 text-center bg-transparent text-sm font-semibold" data-quantity-input>
+                  <button type="button" class="w-10 min-h-10 font-semibold" data-quantity-step="1" aria-label="{{ 'cart.general.increase' | t: title: item.product.title }}">+</button>
+                </quantity-input>
+                <button type="button" class="text-sm text-ink-2 underline underline-offset-2 hover:text-ink" data-line-remove>{{ 'cart.general.remove' | t }}</button>
+              </div>
+            </div>
+          </li>
+        {%- endfor -%}
+      </ul>
+      <div class="shrink-0 border-t border-line p-6 flex flex-col gap-3">
+        <div class="flex justify-between text-lg font-semibold"><span>{{ 'cart.general.subtotal' | t }}</span><span>{{ cart.total_price | money }}</span></div>
+        <p class="text-sm text-ink-2">{{ 'cart.general.taxes_and_shipping' | t }}</p>
+        <form action="{{ routes.cart_url }}" method="post" class="flex flex-col gap-2.5">
+          <button type="submit" name="checkout" class="btn w-full">{{ 'cart.general.checkout' | t }}</button>
+          <a href="{{ routes.cart_url }}" class="btn btn-ghost w-full">{{ 'cart.general.view_cart' | t }}</a>
+        </form>
+      </div>
+    {%- endif -%}
+    <p class="text-sm text-[#B42318] px-6 pb-4 hidden" role="alert" data-drawer-error></p>
+  </dialog>
+</cart-drawer>
+
+{% schema %}
+{ "name": "Cart drawer", "settings": [] }
+{% endschema %}
