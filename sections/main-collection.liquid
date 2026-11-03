@@ -34,13 +34,15 @@
       <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10" role="list">
         {%- for product in collection.products -%}
           {%- liquid
+            # The first card is the page's largest paint on every viewport: preload it. The
+            # rest of the first row loads eagerly, everything below the fold lazily.
             if forloop.index <= 4
               assign loading = 'eager'
             else
               assign loading = 'lazy'
             endif
           -%}
-          <li>{% render 'product-card', product: product, loading: loading %}</li>
+          <li>{% render 'product-card', product: product, loading: loading, heading: 'h2', preload: forloop.first %}</li>
         {%- endfor -%}
       </ul>
     {%- endif -%}

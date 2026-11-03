@@ -11,7 +11,7 @@
     </div>
     <div class="rounded-tile overflow-hidden bg-ground-2 min-h-[320px] md:min-h-[520px]">
       {%- if section.settings.image != blank -%}
-        {{ section.settings.image | image_url: width: 1600 | image_tag: class: 'w-full h-full object-cover', widths: '600, 900, 1200, 1600', sizes: '(min-width: 768px) 58vw, 100vw' }}
+        {{ section.settings.image | image_url: width: 1600 | image_tag: class: 'w-full h-full object-cover', widths: '400, 600, 800, 1000, 1200, 1600', sizes: '(min-width: 1320px) 760px, (min-width: 768px) 58vw, calc(100vw - 48px)', loading: 'eager', fetchpriority: 'high' }}
       {%- endif -%}
     </div>
   </div>

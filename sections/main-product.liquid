@@ -22,16 +22,13 @@
     </div>
     <div class="order-1 md:order-2 flex flex-col gap-4">
       {%- for media in images -%}
-        {%- liquid
-          # The first image is what the page is for: load it eagerly, the rest lazily.
-          if forloop.first
-            assign loading = 'eager'
-          else
-            assign loading = 'lazy'
-          endif
-        -%}
         <div id="media-{{ media.id }}" class="rounded-tile overflow-hidden bg-ground-2 aspect-[4/5] {% unless forloop.first %}scroll-mt-24{% endunless %}">
-          {{ media | image_url: width: 1400 | image_tag: class: 'w-full h-full object-cover', widths: '600, 900, 1200, 1400', sizes: '(min-width: 768px) 50vw, 100vw', loading: loading }}
+          {%- if forloop.first -%}
+            {%- comment -%} The page's largest paint: eager, high priority, preloaded. {%- endcomment -%}
+            {{ media | image_url: width: 1400 | image_tag: class: 'w-full h-full object-cover', widths: '400, 600, 800, 1000, 1200, 1400', sizes: '(min-width: 1320px) 660px, (min-width: 768px) 50vw, calc(100vw - 48px)', loading: 'eager', fetchpriority: 'high' }}
+          {%- else -%}
+            {{ media | image_url: width: 1400 | image_tag: class: 'w-full h-full object-cover', widths: '400, 600, 800, 1000, 1200, 1400', sizes: '(min-width: 1320px) 660px, (min-width: 768px) 50vw, calc(100vw - 48px)', loading: 'lazy' }}
+          {%- endif -%}
         </div>
       {%- endfor -%}
     </div>

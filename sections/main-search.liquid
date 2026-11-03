@@ -64,7 +64,7 @@
             <li>
               {%- case item.object_type -%}
                 {%- when 'product' -%}
-                  {% render 'product-card', product: item %}
+                  {% render 'product-card', product: item, heading: 'h2' %}
                 {%- when 'article' -%}
                   <a href="{{ item.url }}" class="block group">
                     <div class="aspect-card rounded-[14px] overflow-hidden bg-ground-2">{%- if item.image -%}{{ item.image | image_url: width: 800 | image_tag: class: 'w-full h-full object-cover', loading: 'lazy' }}{%- endif -%}</div>

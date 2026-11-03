@@ -4,7 +4,7 @@
     {%- for collection in collections -%}
       <li><a href="{{ collection.url }}" class="block rounded-tile overflow-hidden bg-ground-2 aspect-square relative">
         {%- assign image = collection.image | default: collection.products.first.featured_image -%}
-        {%- if image -%}{{ image | image_url: width: 600 | image_tag: class: 'w-full h-full object-cover', loading: 'lazy', alt: collection.title }}{%- endif -%}
+        {%- if image -%}{{ image | image_url: width: 600 | image_tag: class: 'w-full h-full object-cover', loading: 'lazy', alt: '' }}{%- endif -%}
         <span class="absolute inset-x-0 bottom-0 p-4 pt-10 bg-gradient-to-t from-ink/60 to-transparent font-heading font-bold text-xl text-white">{{ collection.title }}</span>
       </a></li>
     {%- endfor -%}

@@ -25,6 +25,11 @@
 
 @layer base {
   html { font-family: var(--font-body); color: var(--color-ink); background: var(--color-ground); }
+  /* One focus style for everything: keyboard users see it, mouse users do not. */
+  :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; border-radius: 4px; }
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after, ::backdrop { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  }
   h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: var(--lantern-font-heading-weight, 700); letter-spacing: -0.02em; }
   /* The "Heading size" setting scales every heading at once. */
   h1, h2 { font-size: calc(1em * var(--lantern-heading-scale, 1)); }

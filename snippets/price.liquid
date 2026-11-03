@@ -23,7 +23,7 @@
 <span class="{% if size == 'lg' %}text-2xl{% else %}text-sm{% endif %} font-semibold {% if size == 'sm' %}font-normal text-ink-2{% endif %}">
   {%- if on_sale -%}
     <span class="text-[#B42318]">{{ price | money }}</span>
-    <s class="text-ink-2/70 font-normal">{{ compare | money }}</s>
+    <s class="text-ink-2 font-normal">{{ compare | money }}</s>
   {%- elsif varies and variant == nil -%}
     {{ product.price_min | money }} &ndash; {{ product.price_max | money }}
   {%- else -%}
