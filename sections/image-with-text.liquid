@@ -1,0 +1,70 @@
+{%- comment -%}
+  A band with an image on one side and whatever theme blocks the merchant adds on the other.
+  The section owns the layout; the blocks own the words.
+{%- endcomment -%}
+{%- liquid
+  case section.settings.background
+    when 'raised'
+      assign band = 'bg-ground-2'
+    when 'accent'
+      assign band = 'bg-accent text-on-accent'
+    else
+      assign band = ''
+  endcase
+-%}
+<section class="{{ band }}">
+  <div class="wrap grid gap-10 md:grid-cols-2 items-center py-16 md:py-[72px]">
+    <div class="rounded-tile overflow-hidden bg-ground-2 min-h-[320px] md:min-h-[420px] {% if section.settings.layout == 'text_first' %}md:order-2{% endif %}">
+      {%- if section.settings.image != blank -%}
+        {{ section.settings.image | image_url: width: 1200 | image_tag: class: 'w-full h-full object-cover', widths: '600, 900, 1200', sizes: '(min-width: 768px) 50vw, 100vw', loading: 'lazy' }}
+      {%- else -%}
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'w-full h-full object-cover opacity-60' }}
+      {%- endif -%}
+    </div>
+    <div class="flex flex-col gap-4 {% if section.settings.background == 'accent' %}[&_.text-ink-2]:text-on-accent/80 [&_.eyebrow]:text-on-accent{% endif %}">
+      {% content_for 'blocks' %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Image with text",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Image position",
+      "options": [
+        { "value": "image_first", "label": "Image left" },
+        { "value": "text_first", "label": "Image right" }
+      ],
+      "default": "image_first"
+    },
+    {
+      "type": "select",
+      "id": "background",
+      "label": "Background",
+      "options": [
+        { "value": "plain", "label": "Plain" },
+        { "value": "raised", "label": "Raised" },
+        { "value": "accent", "label": "Accent" }
+      ],
+      "default": "raised"
+    }
+  ],
+  "blocks": [{ "type": "@theme" }, { "type": "@app" }],
+  "presets": [
+    {
+      "name": "Image with text",
+      "blocks": [
+        { "type": "heading", "settings": { "text": "Made slowly", "size": "eyebrow" } },
+        { "type": "heading", "settings": { "text": "Eleven workshops, one standard.", "size": "xl" } },
+        { "type": "text" },
+        { "type": "button" }
+      ]
+    }
+  ]
+}
+{% endschema %}

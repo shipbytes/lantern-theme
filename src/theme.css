@@ -20,11 +20,14 @@
   --font-heading: var(--lantern-font-heading);
   --font-body: var(--lantern-font-body);
   --radius-tile: 16px;
+  --aspect-card: var(--lantern-card-ratio, 4/5);
 }
 
 @layer base {
   html { font-family: var(--font-body); color: var(--color-ink); background: var(--color-ground); }
-  h1, h2, h3, h4 { font-family: var(--font-heading); letter-spacing: -0.02em; }
+  h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: var(--lantern-font-heading-weight, 700); letter-spacing: -0.02em; }
+  /* The "Heading size" setting scales every heading at once. */
+  h1, h2 { font-size: calc(1em * var(--lantern-heading-scale, 1)); }
 }
 
 @layer components {
@@ -34,5 +37,7 @@
   .btn-ghost:hover { @apply bg-ink text-ground border-ink; }
   .wrap { @apply max-w-[1320px] mx-auto px-6; }
   .eyebrow { @apply text-xs font-semibold tracking-[0.12em] uppercase text-accent; }
+  .prose-tight :is(p + p) { @apply mt-3; }
+  .prose-tight a { @apply underline underline-offset-2; }
   .icon-btn { @apply inline-flex items-center justify-center w-11 h-11 rounded-full relative hover:bg-ground-2; }
 }

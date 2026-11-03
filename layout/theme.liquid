@@ -11,11 +11,35 @@
   {%- if page_description -%}<meta name="description" content="{{ page_description | escape }}">{%- endif -%}
   <link rel="canonical" href="{{ canonical_url }}">
 
+  {%- liquid
+    assign heading_font = settings.font_heading
+    assign heading_font_heavy = heading_font | font_modify: 'weight', '+100'
+    assign body_font = settings.font_body
+    assign body_font_bold = body_font | font_modify: 'weight', 'bold'
+    assign body_font_italic = body_font | font_modify: 'style', 'italic'
+  -%}
+  {%- comment -%}
+    Fonts first, before content_for_header, so a streamed page meets them early. A system
+    font has no files: font_url returns nothing for it, so every tag that would request a
+    file is guarded with `system?`. font_face returns nothing for system fonts, so it needs
+    no guard.
+  {%- endcomment -%}
+  {%- unless heading_font.system? and body_font.system? -%}
+    <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+  {%- endunless -%}
+  {%- unless heading_font.system? -%}{{ heading_font | font_url | preload_tag: as: 'font', type: 'font/woff2' }}{%- endunless -%}
+  {%- unless body_font.system? -%}{{ body_font | font_url | preload_tag: as: 'font', type: 'font/woff2' }}{%- endunless -%}
+
   {%- comment -%}
     Theme settings become CSS variables here; Tailwind's tokens in src/theme.css read them,
-    so a colour changed in the theme editor changes every utility that uses it.
+    so a colour or font changed in the theme editor changes every utility that uses it.
   {%- endcomment -%}
-  <style>
+  {% style %}
+    {{ heading_font | font_face: font_display: 'swap' }}
+    {{ heading_font_heavy | font_face: font_display: 'swap' }}
+    {{ body_font | font_face: font_display: 'swap' }}
+    {{ body_font_bold | font_face: font_display: 'swap' }}
+    {{ body_font_italic | font_face: font_display: 'swap' }}
     :root {
       --lantern-ground: {{ settings.color_ground }};
       --lantern-ground-2: {{ settings.color_ground_2 }};
@@ -24,10 +48,13 @@
       --lantern-line: {{ settings.color_line }};
       --lantern-accent: {{ settings.color_accent }};
       --lantern-on-accent: {{ settings.color_on_accent }};
-      --lantern-font-heading: ui-sans-serif, system-ui, sans-serif;
-      --lantern-font-body: ui-sans-serif, system-ui, sans-serif;
+      --lantern-font-heading: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+      --lantern-font-heading-weight: {{ heading_font.weight }};
+      --lantern-font-body: {{ body_font.family }}, {{ body_font.fallback_families }};
+      --lantern-heading-scale: {{ settings.heading_scale | divided_by: 100.0 }};
+      --lantern-card-ratio: {{ settings.card_ratio }};
     }
-  </style>
+  {% endstyle %}
   {{ 'theme.css' | asset_url | stylesheet_tag }}
 
   {{ content_for_header }}

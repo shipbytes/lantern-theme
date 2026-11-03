@@ -6,7 +6,12 @@
     "color_ink_2": "#5C5A55",
     "color_line": "#E3DFD6",
     "color_accent": "#0F5F5C",
-    "color_on_accent": "#F4F2EE"
+    "color_on_accent": "#F4F2EE",
+    "font_heading": "manrope_n7",
+    "font_body": "inter_n4",
+    "heading_scale": 100,
+    "card_ratio": "4/5",
+    "card_hover": true
   },
   "presets": {}
 }

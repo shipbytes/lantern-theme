@@ -10,13 +10,110 @@
   {
     "name": "Colors",
     "settings": [
-      { "type": "color", "id": "color_ground", "label": "Background", "default": "#F4F2EE" },
-      { "type": "color", "id": "color_ground_2", "label": "Background, raised", "default": "#E9E6DF" },
-      { "type": "color", "id": "color_ink", "label": "Text", "default": "#1F1F1D" },
-      { "type": "color", "id": "color_ink_2", "label": "Text, muted", "default": "#5C5A55" },
-      { "type": "color", "id": "color_line", "label": "Lines", "default": "#E3DFD6" },
-      { "type": "color", "id": "color_accent", "label": "Accent", "default": "#0F5F5C" },
-      { "type": "color", "id": "color_on_accent", "label": "Text on accent", "default": "#F4F2EE" }
+      {
+        "type": "color",
+        "id": "color_ground",
+        "label": "Background",
+        "default": "#F4F2EE"
+      },
+      {
+        "type": "color",
+        "id": "color_ground_2",
+        "label": "Background, raised",
+        "default": "#E9E6DF"
+      },
+      {
+        "type": "color",
+        "id": "color_ink",
+        "label": "Text",
+        "default": "#1F1F1D"
+      },
+      {
+        "type": "color",
+        "id": "color_ink_2",
+        "label": "Text, muted",
+        "default": "#5C5A55"
+      },
+      {
+        "type": "color",
+        "id": "color_line",
+        "label": "Lines",
+        "default": "#E3DFD6"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Accent",
+        "default": "#0F5F5C"
+      },
+      {
+        "type": "color",
+        "id": "color_on_accent",
+        "label": "Text on accent",
+        "default": "#F4F2EE"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Fonts"
+      },
+      {
+        "type": "paragraph",
+        "content": "Fonts come from Shopify's library and are served from its CDN. System fonts load nothing."
+      },
+      {
+        "type": "font_picker",
+        "id": "font_heading",
+        "label": "Headings",
+        "default": "manrope_n7"
+      },
+      {
+        "type": "font_picker",
+        "id": "font_body",
+        "label": "Body",
+        "default": "inter_n4"
+      },
+      {
+        "type": "range",
+        "id": "heading_scale",
+        "label": "Heading size",
+        "min": 80,
+        "max": 120,
+        "step": 5,
+        "unit": "%",
+        "default": 100
+      }
+    ]
+  },
+  {
+    "name": "Product cards",
+    "settings": [
+      {
+        "type": "select",
+        "id": "card_ratio",
+        "label": "Image shape",
+        "options": [
+          {
+            "value": "4/5",
+            "label": "Portrait"
+          },
+          {
+            "value": "1/1",
+            "label": "Square"
+          }
+        ],
+        "default": "4/5"
+      },
+      {
+        "type": "checkbox",
+        "id": "card_hover",
+        "label": "Show the second image on hover",
+        "default": true
+      }
     ]
   }
 ]

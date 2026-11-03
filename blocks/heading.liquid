@@ -1,0 +1,44 @@
+{%- comment -%}
+  A theme block: lives in blocks/, usable by any section that accepts "@theme".
+  block.shopify_attributes is what lets the editor outline and select the block.
+{%- endcomment -%}
+{%- liquid
+  case block.settings.size
+    when 'eyebrow'
+      assign tag = 'p'
+      assign class = 'eyebrow'
+    when 'lg'
+      assign tag = 'h2'
+      assign class = 'text-[30px] font-bold leading-tight'
+    when 'xl'
+      assign tag = 'h2'
+      assign class = 'text-[38px] font-bold leading-[1.1]'
+    else
+      assign tag = 'h3'
+      assign class = 'text-2xl font-bold leading-tight'
+  endcase
+-%}
+<{{ tag }} class="{{ class }}" {{ block.shopify_attributes }}>{{ block.settings.text }}</{{ tag }}>
+
+{% schema %}
+{
+  "name": "Heading",
+  "tag": null,
+  "settings": [
+    { "type": "inline_richtext", "id": "text", "label": "Heading", "default": "Eleven workshops, one standard." },
+    {
+      "type": "select",
+      "id": "size",
+      "label": "Size",
+      "options": [
+        { "value": "eyebrow", "label": "Eyebrow" },
+        { "value": "md", "label": "Medium" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "Extra large" }
+      ],
+      "default": "lg"
+    }
+  ],
+  "presets": [{ "name": "Heading" }]
+}
+{% endschema %}

@@ -83,5 +83,18 @@
     "article": {
       "by": "By {{ author }}"
     }
+  },
+  "sections": {
+    "collection_list": {
+      "view_all": "All collections"
+    },
+    "featured_collection": {
+      "view_all": "View all"
+    },
+    "newsletter": {
+      "email": "Email address",
+      "placeholder": "you@example.com",
+      "success": "Thanks, you are on the list."
+    }
   }
 }

@@ -1,0 +1,13 @@
+{%- comment -%} Rich text from the editor: Shopify returns it as HTML, so it is not escaped. {%- endcomment -%}
+<div class="prose-tight text-[17px] leading-relaxed text-ink-2 max-w-[52ch]" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+
+{% schema %}
+{
+  "name": "Text",
+  "tag": null,
+  "settings": [
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Every piece is made to order in batches of twenty or fewer. We pay the workshop before the piece ships, and we publish who made what on every product page.</p>" }
+  ],
+  "presets": [{ "name": "Text" }]
+}
+{% endschema %}
