@@ -1,2 +1,7 @@
-// Lantern theme script. Empty on purpose in part 1; the cart drawer and variant picker
-// arrive in part 4.
+// Lantern theme script.
+
+// Collection sorting: the select submits its form on change; without JavaScript the
+// <noscript> Apply button does the same.
+document.querySelectorAll('#SortBy').forEach((select) => {
+  select.addEventListener('change', () => select.form.requestSubmit());
+});

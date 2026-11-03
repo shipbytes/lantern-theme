@@ -1,0 +1,32 @@
+{%- comment -%}
+  A price with its compare-at price when the item is on sale.
+  {% render 'price', product: product %}   the product's current variant, or a range
+  {% render 'price', variant: variant %}   one variant
+  `size` is 'sm' (cards) or 'lg' (the product page).
+{%- endcomment -%}
+{%- liquid
+  assign size = size | default: 'sm'
+  if variant
+    assign price = variant.price
+    assign compare = variant.compare_at_price
+    assign varies = false
+  else
+    assign price = product.selected_or_first_available_variant.price
+    assign compare = product.selected_or_first_available_variant.compare_at_price
+    assign varies = product.price_varies
+  endif
+  assign on_sale = false
+  if compare > price
+    assign on_sale = true
+  endif
+-%}
+<span class="{% if size == 'lg' %}text-2xl{% else %}text-sm{% endif %} font-semibold {% if size == 'sm' %}font-normal text-ink-2{% endif %}">
+  {%- if on_sale -%}
+    <span class="text-[#B42318]">{{ price | money }}</span>
+    <s class="text-ink-2/70 font-normal">{{ compare | money }}</s>
+  {%- elsif varies and variant == nil -%}
+    {{ product.price_min | money }} &ndash; {{ product.price_max | money }}
+  {%- else -%}
+    {{ price | money }}
+  {%- endif -%}
+</span>

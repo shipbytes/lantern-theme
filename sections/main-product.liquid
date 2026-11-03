@@ -1,34 +1,113 @@
-{%- comment -%} Part 1: enough to see a product and buy it. Variants, media and the cart drawer come in parts 2 and 4. {%- endcomment -%}
-<section class="wrap py-8 grid gap-12 md:grid-cols-[7fr_5fr] items-start">
-  <div class="rounded-tile overflow-hidden bg-ground-2 aspect-[4/5]">
-    {%- if product.featured_image -%}
-      {{ product.featured_image | image_url: width: 1200 | image_tag: class: 'w-full h-full object-cover', widths: '600, 900, 1200', sizes: '(min-width: 768px) 58vw, 100vw' }}
-    {%- endif -%}
+{%- comment -%}
+  The product page. Part 2: the gallery from product.media, the price snippet, a variant
+  picker rendered from product.options_with_values, quantity and the add-to-cart form, and
+  the description in accordions. Switching variants without a reload is part 4; until then
+  the form posts the first available variant, and the picker is links to each variant.
+{%- endcomment -%}
+{%- liquid
+  assign current = product.selected_or_first_available_variant
+  assign images = product.media | where: 'media_type', 'image'
+  assign featured = current.featured_media | default: product.featured_media
+-%}
+<section class="wrap py-8 grid gap-12 md:grid-cols-[7fr_5fr] items-start" id="MainProduct">
+  <div class="grid gap-4 md:grid-cols-[88px_minmax(0,1fr)]">
+    <div class="order-2 md:order-1 flex md:flex-col gap-2.5 overflow-x-auto">
+      {%- for media in images -%}
+        <a href="#media-{{ media.id }}" class="block shrink-0 w-[72px] md:w-full aspect-square rounded-[10px] overflow-hidden bg-ground-2 border-2 {% if media.id == featured.id %}border-ink{% else %}border-transparent{% endif %}" aria-label="Image {{ forloop.index }} of {{ images.size }}">
+          {{ media | image_url: width: 180 | image_tag: class: 'w-full h-full object-cover', widths: '90, 180', sizes: '88px', loading: 'lazy' }}
+        </a>
+      {%- endfor -%}
+    </div>
+    <div class="order-1 md:order-2 flex flex-col gap-4">
+      {%- for media in images -%}
+        {%- liquid
+          # The first image is what the page is for: load it eagerly, the rest lazily.
+          if forloop.first
+            assign loading = 'eager'
+          else
+            assign loading = 'lazy'
+          endif
+        -%}
+        <div id="media-{{ media.id }}" class="rounded-tile overflow-hidden bg-ground-2 aspect-[4/5] {% unless forloop.first %}scroll-mt-24{% endunless %}">
+          {{ media | image_url: width: 1400 | image_tag: class: 'w-full h-full object-cover', widths: '600, 900, 1200, 1400', sizes: '(min-width: 768px) 50vw, 100vw', loading: loading }}
+        </div>
+      {%- endfor -%}
+    </div>
   </div>
-  <div class="flex flex-col gap-5">
-    <h1 class="text-[34px] leading-tight font-extrabold">{{ product.title }}</h1>
-    {%- if product.vendor != blank -%}<p class="text-sm text-ink-2">{{ 'products.product.vendor' | t: vendor: product.vendor }}</p>{%- endif -%}
-    <p class="text-2xl font-semibold">{{ product.selected_or_first_available_variant.price | money }}</p>
-    {%- form 'product', product, class: 'flex flex-col gap-4' -%}
+
+  <div class="flex flex-col gap-5 md:sticky md:top-24">
+    <nav aria-label="Breadcrumb" class="text-[13px] text-ink-2 flex gap-2">
+      <a href="{{ routes.root_url }}" class="hover:text-ink">{{ 'general.breadcrumbs.home' | t }}</a>
+      {%- if collection -%}<span aria-hidden="true">/</span><a href="{{ collection.url }}" class="hover:text-ink">{{ collection.title }}</a>{%- endif -%}
+    </nav>
+    <div class="flex flex-col gap-2">
+      <h1 class="text-[34px] leading-tight font-extrabold">{{ product.title }}</h1>
+      {%- if product.vendor != blank and product.vendor != shop.name -%}<p class="text-sm text-ink-2">{{ 'products.product.vendor' | t: vendor: product.vendor }}</p>{%- endif -%}
+    </div>
+    <p>{% render 'price', variant: current, size: 'lg' %} <span class="text-[13px] text-ink-2">&middot; {{ 'products.product.tax_note' | t }}</span></p>
+
+    {%- form 'product', product, class: 'flex flex-col gap-5', id: 'ProductForm' -%}
       {%- unless product.has_only_default_variant -%}
-        <label class="flex flex-col gap-2 text-sm font-semibold">Variant
-          <select name="id" class="min-h-11 rounded-full border border-line bg-white px-4 font-normal">
-            {%- for variant in product.variants -%}
-              <option value="{{ variant.id }}" {% if variant == product.selected_or_first_available_variant %}selected{% endif %} {% unless variant.available %}disabled{% endunless %}>{{ variant.title }} &middot; {{ variant.price | money }}{% unless variant.available %} &middot; {{ 'products.product.sold_out' | t }}{% endunless %}</option>
-            {%- endfor -%}
-          </select>
-        </label>
-      {%- else -%}
-        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+        {%- for option in product.options_with_values -%}
+          <fieldset class="flex flex-col gap-2.5 border-0 p-0 m-0">
+            <legend class="text-sm font-semibold mb-2.5">{{ option.name }}: <span class="font-normal text-ink-2">{{ option.selected_value }}</span></legend>
+            <div class="flex flex-wrap gap-2.5">
+              {%- for value in option.values -%}
+                {%- liquid
+                  assign swatch = value.swatch
+                  if value.variant
+                    assign href = value.variant.url
+                  else
+                    assign href = product.url
+                  endif
+                -%}
+                {%- if swatch -%}
+                  <a href="{{ href }}" class="block w-9 h-9 rounded-full border-2 {% if value.selected %}border-ground shadow-[0_0_0_2px_var(--lantern-ink)]{% else %}border-transparent shadow-[0_0_0_1px_var(--lantern-line)]{% endif %} {% unless value.available %}opacity-40{% endunless %}" style="background: {{ swatch.color | default: '#ddd' }}" aria-label="{{ value }}{% unless value.available %}, {{ 'products.product.sold_out' | t }}{% endunless %}" {% if value.selected %}aria-current="true"{% endif %}></a>
+                {%- else -%}
+                  <a href="{{ href }}" class="min-h-11 px-4 inline-flex items-center rounded-full border text-sm font-medium {% if value.selected %}bg-ink text-ground border-ink{% else %}bg-white border-line hover:border-ink{% endif %} {% unless value.available %}line-through text-ink-2{% endunless %}" {% if value.selected %}aria-current="true"{% endif %}>{{ value }}</a>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          </fieldset>
+        {%- endfor -%}
       {%- endunless -%}
-      <button type="submit" class="btn w-full" {% unless product.available %}disabled{% endunless %}>
-        {%- if product.available -%}{{ 'products.product.add_to_cart' | t }}{%- else -%}{{ 'products.product.sold_out' | t }}{%- endif -%}
-      </button>
+      <input type="hidden" name="id" value="{{ current.id }}">
+
+      <div class="flex flex-wrap gap-3 items-stretch">
+        <div class="inline-flex items-center rounded-full border border-line bg-white">
+          <label for="Quantity" class="sr-only">{{ 'products.product.quantity' | t }}</label>
+          <input id="Quantity" type="number" name="quantity" value="1" min="1" class="w-16 min-h-11 text-center bg-transparent font-semibold">
+        </div>
+        <button type="submit" class="btn flex-1 min-w-[220px]" {% unless current.available %}disabled{% endunless %}>
+          {%- if current.available -%}{{ 'products.product.add_to_cart' | t }} &middot; {{ current.price | money }}{%- else -%}{{ 'products.product.sold_out' | t }}{%- endif -%}
+        </button>
+      </div>
     {%- endform -%}
-    <div class="prose prose-sm max-w-none text-ink-2">{{ product.description }}</div>
+
+    {%- if current.available -%}
+      <p class="text-[13px] text-accent font-medium flex items-center gap-2">{% render 'icon', name: 'check' %}{{ 'products.product.in_stock' | t }}</p>
+    {%- endif -%}
+
+    <div class="flex flex-col border-b border-line">
+      <details class="border-t border-line group" open>
+        <summary class="list-none cursor-pointer py-4 font-semibold flex justify-between items-center">{{ 'products.product.details' | t }}<span class="group-open:rotate-180 transition-transform">{% render 'icon', name: 'chevron' %}</span></summary>
+        <div class="prose prose-sm max-w-none text-ink-2 pb-4">{{ product.description }}</div>
+      </details>
+      {%- if section.settings.shipping_text != blank -%}
+        <details class="border-t border-line group">
+          <summary class="list-none cursor-pointer py-4 font-semibold flex justify-between items-center">{{ 'products.product.shipping' | t }}<span class="group-open:rotate-180 transition-transform">{% render 'icon', name: 'chevron' %}</span></summary>
+          <div class="text-sm text-ink-2 pb-4 leading-relaxed">{{ section.settings.shipping_text }}</div>
+        </details>
+      {%- endif -%}
+    </div>
   </div>
 </section>
 
 {% schema %}
-{ "name": "Product", "settings": [] }
+{
+  "name": "Product",
+  "settings": [
+    { "type": "richtext", "id": "shipping_text", "label": "Shipping and returns", "default": "<p>Free across India on orders over ₹1,499. Returns within 14 days if unused.</p>" }
+  ]
+}
 {% endschema %}

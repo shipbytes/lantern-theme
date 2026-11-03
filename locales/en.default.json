@@ -1,19 +1,87 @@
 {
-  "accessibility": { "skip_to_content": "Skip to content" },
-  "general": {
-    "navigation": { "main": "Main navigation" },
-    "pagination": { "page": "Page {{ page }}", "next": "Next page", "previous": "Previous page" },
-    "search": { "search": "Search", "placeholder": "Search the store", "results": { "one": "{{ count }} result for \"{{ terms }}\"", "other": "{{ count }} results for \"{{ terms }}\"" }, "no_results": "Nothing found for \"{{ terms }}\"" },
-    "404": { "title": "Page not found", "text": "The page you were looking for does not exist.", "link": "Back to the home page" },
-    "password": { "title": "Opening soon", "label": "Password", "submit": "Enter" }
+  "accessibility": {
+    "skip_to_content": "Skip to content"
   },
-  "customer": { "account": { "title": "Account" } },
+  "general": {
+    "navigation": {
+      "main": "Main navigation"
+    },
+    "pagination": {
+      "page": "Page {{ page }}",
+      "next": "Next page",
+      "previous": "Previous page"
+    },
+    "search": {
+      "search": "Search",
+      "placeholder": "Search the store",
+      "results": {
+        "one": "{{ count }} result for \"{{ terms }}\"",
+        "other": "{{ count }} results for \"{{ terms }}\""
+      },
+      "no_results": "Nothing found for \"{{ terms }}\""
+    },
+    "404": {
+      "title": "Page not found",
+      "text": "The page you were looking for does not exist.",
+      "link": "Back to the home page"
+    },
+    "password": {
+      "title": "Opening soon",
+      "label": "Password",
+      "submit": "Enter"
+    },
+    "breadcrumbs": {
+      "home": "Home"
+    }
+  },
+  "customer": {
+    "account": {
+      "title": "Account"
+    }
+  },
   "cart": {
-    "general": { "title": "Your cart", "item_count": { "one": "{{ count }} item", "other": "{{ count }} items" }, "empty": "Your cart is empty.", "continue": "Continue shopping", "subtotal": "Subtotal", "checkout": "Checkout", "taxes_and_shipping": "Tax included. Shipping calculated at checkout." }
+    "general": {
+      "title": "Your cart",
+      "item_count": {
+        "one": "{{ count }} item",
+        "other": "{{ count }} items"
+      },
+      "empty": "Your cart is empty.",
+      "continue": "Continue shopping",
+      "subtotal": "Subtotal",
+      "checkout": "Checkout",
+      "taxes_and_shipping": "Tax included. Shipping calculated at checkout."
+    }
   },
   "products": {
-    "product": { "add_to_cart": "Add to cart", "sold_out": "Sold out", "quantity": "Quantity", "vendor": "By {{ vendor }}" }
+    "product": {
+      "add_to_cart": "Add to cart",
+      "sold_out": "Sold out",
+      "quantity": "Quantity",
+      "vendor": "By {{ vendor }}",
+      "on_sale": "Sale",
+      "tax_note": "Tax included, shipping at checkout",
+      "in_stock": "In stock, ships in 2 to 3 days",
+      "details": "Details",
+      "shipping": "Shipping and returns"
+    }
   },
-  "collections": { "general": { "products_count": { "one": "{{ count }} product", "other": "{{ count }} products" }, "empty": "No products here yet." } },
-  "blogs": { "article": { "by": "By {{ author }}" } }
+  "collections": {
+    "general": {
+      "products_count": {
+        "one": "{{ count }} product",
+        "other": "{{ count }} products"
+      },
+      "empty": "No products here yet."
+    },
+    "sorting": {
+      "title": "Sort by",
+      "apply": "Apply"
+    }
+  },
+  "blogs": {
+    "article": {
+      "by": "By {{ author }}"
+    }
+  }
 }
