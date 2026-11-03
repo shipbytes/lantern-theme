@@ -1,0 +1,32 @@
+<section class="wrap py-8 flex flex-col gap-6">
+  <h1 class="text-[40px] font-extrabold">{{ 'general.search.search' | t }}</h1>
+  <form action="{{ routes.search_url }}" method="get" role="search" class="flex gap-3 max-w-xl">
+    <label for="Search" class="sr-only">{{ 'general.search.search' | t }}</label>
+    <input id="Search" type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'general.search.placeholder' | t }}" class="flex-1 min-h-12 rounded-full border border-line bg-white px-5">
+    <input type="hidden" name="options[prefix]" value="last">
+    <button type="submit" class="btn">{{ 'general.search.search' | t }}</button>
+  </form>
+  {%- if search.performed -%}
+    {%- if search.results_count == 0 -%}
+      <p class="text-ink-2">{{ 'general.search.no_results' | t: terms: search.terms }}</p>
+    {%- else -%}
+      <p class="text-sm text-ink-2">{{ 'general.search.results' | t: count: search.results_count, terms: search.terms }}</p>
+      {%- paginate search.results by 12 -%}
+        <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" role="list">
+          {%- for item in search.results -%}
+            <li>
+              {%- if item.object_type == 'product' -%}
+                {% render 'product-card', product: item %}
+              {%- else -%}
+                <a href="{{ item.url }}" class="block py-3 border-b border-line"><span class="eyebrow">{{ item.object_type }}</span><h3 class="font-semibold mt-1">{{ item.title }}</h3></a>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endpaginate -%}
+    {%- endif -%}
+  {%- endif -%}
+</section>
+{% schema %}
+{ "name": "Search", "settings": [] }
+{% endschema %}

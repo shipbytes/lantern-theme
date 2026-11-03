@@ -1,0 +1,42 @@
+<footer class="bg-ink text-ground mt-auto">
+  <div class="wrap grid gap-8 md:grid-cols-[2fr_1fr_1fr] pt-14 pb-10">
+    <div class="flex flex-col gap-3">
+      <span class="font-heading font-extrabold text-xl">{{ shop.name }}</span>
+      {%- if section.settings.text != blank -%}
+        <p class="text-sm leading-relaxed max-w-[34ch] text-ground-2">{{ section.settings.text | escape }}</p>
+      {%- endif -%}
+    </div>
+    {%- for i in (1..2) -%}
+      {%- liquid
+        if i == 1
+          assign menu = linklists[section.settings.menu_1]
+        else
+          assign menu = linklists[section.settings.menu_2]
+        endif
+      -%}
+      {%- if menu.links.size > 0 -%}
+        <div>
+          <p class="text-xs tracking-[0.1em] uppercase text-ground-2 mb-2.5">{{ menu.title }}</p>
+          {%- for link in menu.links -%}
+            <a href="{{ link.url }}" class="block py-1 text-sm hover:text-accent">{{ link.title }}</a>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+  <div class="wrap border-t border-ink-2 py-5 flex flex-wrap justify-between gap-4 text-[13px] text-ground-2">
+    <span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}</span>
+    <span>{{ localization.country.currency.iso_code }} {{ localization.country.currency.symbol }} &middot; {{ localization.language.endonym_name }}</span>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    { "type": "textarea", "id": "text", "label": "Short text", "default": "Objects for the evening, made in India." },
+    { "type": "link_list", "id": "menu_1", "label": "First menu", "default": "footer" },
+    { "type": "link_list", "id": "menu_2", "label": "Second menu" }
+  ]
+}
+{% endschema %}

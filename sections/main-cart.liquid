@@ -1,0 +1,37 @@
+<section class="wrap py-8 flex flex-col gap-6 max-w-3xl">
+  <h1 class="text-[34px] font-extrabold">{{ 'cart.general.title' | t }}</h1>
+  {%- if cart.item_count == 0 -%}
+    <p class="text-ink-2">{{ 'cart.general.empty' | t }}</p>
+    <div><a class="btn" href="{{ routes.all_products_collection_url }}">{{ 'cart.general.continue' | t }}</a></div>
+  {%- else -%}
+    {%- form 'cart', cart, class: 'flex flex-col gap-6' -%}
+      <ul class="divide-y divide-line" role="list">
+        {%- for item in cart.items -%}
+          <li class="grid grid-cols-[88px_1fr_auto] gap-4 py-4 items-start">
+            <div class="aspect-square rounded-[10px] overflow-hidden bg-ground-2">{%- if item.image -%}{{ item.image | image_url: width: 200 | image_tag: class: 'w-full h-full object-cover', loading: 'lazy' }}{%- endif -%}</div>
+            <div class="flex flex-col gap-1 min-w-0">
+              <a href="{{ item.url }}" class="font-semibold">{{ item.product.title }}</a>
+              {%- unless item.product.has_only_default_variant -%}<span class="text-sm text-ink-2">{{ item.variant.title }}</span>{%- endunless -%}
+              <label class="text-sm mt-2 flex items-center gap-2">{{ 'products.product.quantity' | t }}
+                <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" class="w-20 min-h-11 rounded-full border border-line px-3 text-center bg-white">
+              </label>
+            </div>
+            <span class="font-semibold">{{ item.final_line_price | money }}</span>
+          </li>
+        {%- endfor -%}
+      </ul>
+      <div class="flex flex-col gap-3 items-end">
+        <p class="text-lg font-semibold">{{ 'cart.general.subtotal' | t }}: {{ cart.total_price | money }}</p>
+        <p class="text-sm text-ink-2">{{ 'cart.general.taxes_and_shipping' | t }}</p>
+        <div class="flex gap-3">
+          <button type="submit" name="update" class="btn btn-ghost">Update</button>
+          <button type="submit" name="checkout" class="btn">{{ 'cart.general.checkout' | t }}</button>
+        </div>
+      </div>
+    {%- endform -%}
+  {%- endif -%}
+</section>
+
+{% schema %}
+{ "name": "Cart", "settings": [] }
+{% endschema %}

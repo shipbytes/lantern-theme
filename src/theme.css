@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+/* Tailwind only emits classes it finds; tell it where the Liquid lives. */
+@source "../layout";
+@source "../sections";
+@source "../snippets";
+@source "../blocks";
+@source "../templates";
+
+/* The theme's design tokens. `inline` makes each utility use the CSS variable itself, so
+   the values can come from theme settings at runtime (layout/theme.liquid sets them). */
+@theme inline {
+  --color-ground: var(--lantern-ground);
+  --color-ground-2: var(--lantern-ground-2);
+  --color-ink: var(--lantern-ink);
+  --color-ink-2: var(--lantern-ink-2);
+  --color-line: var(--lantern-line);
+  --color-accent: var(--lantern-accent);
+  --color-on-accent: var(--lantern-on-accent);
+  --font-heading: var(--lantern-font-heading);
+  --font-body: var(--lantern-font-body);
+  --radius-tile: 16px;
+}
+
+@layer base {
+  html { font-family: var(--font-body); color: var(--color-ink); background: var(--color-ground); }
+  h1, h2, h3, h4 { font-family: var(--font-heading); letter-spacing: -0.02em; }
+}
+
+@layer components {
+  .btn { @apply inline-flex items-center justify-center min-h-12 px-6 rounded-full font-semibold text-[15px] border border-ink bg-ink text-ground transition-colors; }
+  .btn:hover { @apply bg-accent border-accent text-on-accent; }
+  .btn-ghost { @apply bg-transparent text-ink; }
+  .btn-ghost:hover { @apply bg-ink text-ground border-ink; }
+  .wrap { @apply max-w-[1320px] mx-auto px-6; }
+  .eyebrow { @apply text-xs font-semibold tracking-[0.12em] uppercase text-accent; }
+  .icon-btn { @apply inline-flex items-center justify-center w-11 h-11 rounded-full relative hover:bg-ground-2; }
+}

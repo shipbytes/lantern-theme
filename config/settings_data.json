@@ -1,0 +1,12 @@
+{
+  "current": {
+    "color_ground": "#F4F2EE",
+    "color_ground_2": "#E9E6DF",
+    "color_ink": "#1F1F1D",
+    "color_ink_2": "#5C5A55",
+    "color_line": "#E3DFD6",
+    "color_accent": "#0F5F5C",
+    "color_on_accent": "#F4F2EE"
+  },
+  "presets": {}
+}

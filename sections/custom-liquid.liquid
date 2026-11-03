@@ -1,0 +1,12 @@
+{%- comment -%} Required by the Theme Store: a place for merchants and apps to drop Liquid or HTML. {%- endcomment -%}
+<div class="wrap py-8">{{ section.settings.custom_liquid }}</div>
+
+{% schema %}
+{
+  "name": "Custom Liquid",
+  "settings": [
+    { "type": "liquid", "id": "custom_liquid", "label": "Liquid or HTML" }
+  ],
+  "presets": [{ "name": "Custom Liquid" }]
+}
+{% endschema %}

@@ -1,0 +1,17 @@
+{
+  "name": "lantern-theme",
+  "version": "1.0.0",
+  "description": "Lantern, a Shopify theme built from scratch for the shipbytes.dev series",
+  "scripts": {
+    "build": "tailwindcss -i src/theme.css -o assets/theme.css --minify",
+    "watch": "tailwindcss -i src/theme.css -o assets/theme.css --watch",
+    "check": "shopify theme check"
+  },
+  "keywords": [],
+  "type": "commonjs",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.4",
+    "tailwindcss": "^4.3.4"
+  },
+  "private": true
+}

@@ -1,0 +1,34 @@
+{%- comment -%} Part 1: enough to see a product and buy it. Variants, media and the cart drawer come in parts 2 and 4. {%- endcomment -%}
+<section class="wrap py-8 grid gap-12 md:grid-cols-[7fr_5fr] items-start">
+  <div class="rounded-tile overflow-hidden bg-ground-2 aspect-[4/5]">
+    {%- if product.featured_image -%}
+      {{ product.featured_image | image_url: width: 1200 | image_tag: class: 'w-full h-full object-cover', widths: '600, 900, 1200', sizes: '(min-width: 768px) 58vw, 100vw' }}
+    {%- endif -%}
+  </div>
+  <div class="flex flex-col gap-5">
+    <h1 class="text-[34px] leading-tight font-extrabold">{{ product.title }}</h1>
+    {%- if product.vendor != blank -%}<p class="text-sm text-ink-2">{{ 'products.product.vendor' | t: vendor: product.vendor }}</p>{%- endif -%}
+    <p class="text-2xl font-semibold">{{ product.selected_or_first_available_variant.price | money }}</p>
+    {%- form 'product', product, class: 'flex flex-col gap-4' -%}
+      {%- unless product.has_only_default_variant -%}
+        <label class="flex flex-col gap-2 text-sm font-semibold">Variant
+          <select name="id" class="min-h-11 rounded-full border border-line bg-white px-4 font-normal">
+            {%- for variant in product.variants -%}
+              <option value="{{ variant.id }}" {% if variant == product.selected_or_first_available_variant %}selected{% endif %} {% unless variant.available %}disabled{% endunless %}>{{ variant.title }} &middot; {{ variant.price | money }}{% unless variant.available %} &middot; {{ 'products.product.sold_out' | t }}{% endunless %}</option>
+            {%- endfor -%}
+          </select>
+        </label>
+      {%- else -%}
+        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+      {%- endunless -%}
+      <button type="submit" class="btn w-full" {% unless product.available %}disabled{% endunless %}>
+        {%- if product.available -%}{{ 'products.product.add_to_cart' | t }}{%- else -%}{{ 'products.product.sold_out' | t }}{%- endif -%}
+      </button>
+    {%- endform -%}
+    <div class="prose prose-sm max-w-none text-ink-2">{{ product.description }}</div>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Product", "settings": [] }
+{% endschema %}

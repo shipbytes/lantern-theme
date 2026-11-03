@@ -1,0 +1,7 @@
+# Not part of the theme: the Tailwind source and the Node toolchain stay local.
+src/*
+node_modules/*
+package.json
+package-lock.json
+README.md
+.gitignore

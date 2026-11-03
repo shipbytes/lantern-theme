@@ -1,0 +1,14 @@
+<section class="wrap py-8 flex flex-col gap-6">
+  <h1 class="text-[40px] font-extrabold">Collections</h1>
+  <ul class="grid grid-cols-2 md:grid-cols-4 gap-5" role="list">
+    {%- for collection in collections -%}
+      <li><a href="{{ collection.url }}" class="block rounded-tile overflow-hidden bg-ground-2 aspect-square relative">
+        {%- if collection.image -%}{{ collection.image | image_url: width: 600 | image_tag: class: 'w-full h-full object-cover', loading: 'lazy' }}{%- endif -%}
+        <span class="absolute bottom-4 left-4 font-heading font-bold text-xl">{{ collection.title }}</span>
+      </a></li>
+    {%- endfor -%}
+  </ul>
+</section>
+{% schema %}
+{ "name": "Collections list", "settings": [] }
+{% endschema %}

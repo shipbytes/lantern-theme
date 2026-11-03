@@ -1,0 +1,42 @@
+<section class="wrap py-8 flex flex-col gap-6">
+  <div class="flex flex-wrap items-end justify-between gap-4">
+    <div class="flex flex-col gap-2">
+      <h1 class="text-[40px] font-extrabold">{{ collection.title }}</h1>
+      {%- if collection.description != blank -%}<div class="text-ink-2 max-w-[60ch]">{{ collection.description }}</div>{%- endif -%}
+    </div>
+    <p class="text-sm text-ink-2">{{ 'collections.general.products_count' | t: count: collection.products_count }}</p>
+  </div>
+  {%- paginate collection.products by section.settings.per_page -%}
+    {%- if collection.products.size == 0 -%}
+      <p class="text-ink-2">{{ 'collections.general.empty' | t }}</p>
+    {%- else -%}
+      <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" role="list">
+        {%- for product in collection.products -%}
+          <li>{% render 'product-card', product: product %}</li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+    {%- if paginate.pages > 1 -%}
+      <nav class="flex justify-center gap-1 pt-4" aria-label="{{ 'general.pagination.page' | t: page: paginate.current_page }}">
+        {%- for part in paginate.parts -%}
+          {%- if part.is_link -%}
+            <a href="{{ part.url }}" class="inline-flex items-center justify-center min-w-11 h-11 rounded-full font-semibold text-sm hover:bg-ground-2">{{ part.title }}</a>
+          {%- elsif part.title == paginate.current_page -%}
+            <span aria-current="page" class="inline-flex items-center justify-center min-w-11 h-11 rounded-full font-semibold text-sm bg-ink text-ground">{{ part.title }}</span>
+          {%- else -%}
+            <span class="inline-flex items-center justify-center min-w-11 h-11 text-sm">{{ part.title }}</span>
+          {%- endif -%}
+        {%- endfor -%}
+      </nav>
+    {%- endif -%}
+  {%- endpaginate -%}
+</section>
+
+{% schema %}
+{
+  "name": "Collection",
+  "settings": [
+    { "type": "range", "id": "per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 12 }
+  ]
+}
+{% endschema %}

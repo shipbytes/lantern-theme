@@ -1,0 +1,2 @@
+# Shopify CLI's `shopify theme check` reads this. Defaults, plus nothing yet.
+extends: theme-check:recommended

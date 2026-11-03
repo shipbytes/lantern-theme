@@ -1,0 +1,17 @@
+{%- comment -%}
+  Inline SVG icons by name: {% render 'icon', name: 'cart' %}. Stroke icons inherit the
+  text colour, so one file serves every surface. Decorative: hidden from screen readers;
+  the button or link around them carries the label.
+{%- endcomment -%}
+<svg class="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+  {%- case name -%}
+    {%- when 'search' -%}<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>
+    {%- when 'account' -%}<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/>
+    {%- when 'cart' -%}<path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.5L21.5 8H7"/><circle cx="10" cy="20" r="1"/><circle cx="17" cy="20" r="1"/>
+    {%- when 'menu' -%}<path d="M4 7h16M4 12h16M4 17h16"/>
+    {%- when 'close' -%}<path d="M6 6l12 12M18 6 6 18"/>
+    {%- when 'chevron' -%}<path d="m6 9 6 6 6-6"/>
+    {%- when 'arrow' -%}<path d="m9 6 6 6-6 6"/>
+    {%- when 'check' -%}<path d="m5 12 4 4L19 6"/>
+  {%- endcase -%}
+</svg>

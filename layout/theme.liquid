@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>
+    {{- page_title -}}
+    {%- if current_page != 1 %} &ndash; {{ 'general.pagination.page' | t: page: current_page }}{% endif -%}
+    {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+  </title>
+  {%- if page_description -%}<meta name="description" content="{{ page_description | escape }}">{%- endif -%}
+  <link rel="canonical" href="{{ canonical_url }}">
+
+  {%- comment -%}
+    Theme settings become CSS variables here; Tailwind's tokens in src/theme.css read them,
+    so a colour changed in the theme editor changes every utility that uses it.
+  {%- endcomment -%}
+  <style>
+    :root {
+      --lantern-ground: {{ settings.color_ground }};
+      --lantern-ground-2: {{ settings.color_ground_2 }};
+      --lantern-ink: {{ settings.color_ink }};
+      --lantern-ink-2: {{ settings.color_ink_2 }};
+      --lantern-line: {{ settings.color_line }};
+      --lantern-accent: {{ settings.color_accent }};
+      --lantern-on-accent: {{ settings.color_on_accent }};
+      --lantern-font-heading: ui-sans-serif, system-ui, sans-serif;
+      --lantern-font-body: ui-sans-serif, system-ui, sans-serif;
+    }
+  </style>
+  {{ 'theme.css' | asset_url | stylesheet_tag }}
+
+  {{ content_for_header }}
+</head>
+<body class="min-h-screen flex flex-col bg-ground text-ink antialiased">
+  <a href="#MainContent" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-ink focus:text-ground focus:px-4 focus:py-2 focus:rounded-full">{{ 'accessibility.skip_to_content' | t }}</a>
+
+  {% sections 'header-group' %}
+
+  <main id="MainContent" class="flex-1" role="main" tabindex="-1">
+    {{ content_for_layout }}
+  </main>
+
+  {% sections 'footer-group' %}
+
+  <script src="{{ 'theme.js' | asset_url }}" defer></script>
+</body>
+</html>

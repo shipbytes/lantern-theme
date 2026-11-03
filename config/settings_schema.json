@@ -1,0 +1,22 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Lantern",
+    "theme_version": "0.1.0",
+    "theme_author": "Shipbytes",
+    "theme_documentation_url": "https://shipbytes.dev/blog/shopify-theme-from-scratch/",
+    "theme_support_url": "https://github.com/shipbytes/lantern-theme/issues"
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      { "type": "color", "id": "color_ground", "label": "Background", "default": "#F4F2EE" },
+      { "type": "color", "id": "color_ground_2", "label": "Background, raised", "default": "#E9E6DF" },
+      { "type": "color", "id": "color_ink", "label": "Text", "default": "#1F1F1D" },
+      { "type": "color", "id": "color_ink_2", "label": "Text, muted", "default": "#5C5A55" },
+      { "type": "color", "id": "color_line", "label": "Lines", "default": "#E3DFD6" },
+      { "type": "color", "id": "color_accent", "label": "Accent", "default": "#0F5F5C" },
+      { "type": "color", "id": "color_on_accent", "label": "Text on accent", "default": "#F4F2EE" }
+    ]
+  }
+]
