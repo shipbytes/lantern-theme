@@ -1,5 +1,5 @@
 <article class="wrap py-10 max-w-3xl">
-  <p class="text-sm text-ink-2">{{ article.published_at | date: '%-d %B %Y' }} &middot; {{ 'blogs.article.by' | t: author: article.author }}</p>
+  <p class="text-sm text-ink-2">{{ article.published_at | date: format: 'date' }} &middot; {{ 'blogs.article.by' | t: author: article.author }}</p>
   <h1 class="text-[40px] font-extrabold mt-2 mb-6">{{ article.title }}</h1>
   {%- if article.image -%}<div class="rounded-tile overflow-hidden mb-8">{{ article.image | image_url: width: 1200 | image_tag: class: 'w-full' }}</div>{%- endif -%}
   <div class="prose max-w-none">{{ article.content }}</div>

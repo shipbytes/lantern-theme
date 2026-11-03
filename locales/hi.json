@@ -1,0 +1,132 @@
+{
+  "accessibility": {
+    "skip_to_content": "मुख्य सामग्री पर जाएँ",
+    "close": "बंद करें"
+  },
+  "general": {
+    "navigation": {
+      "main": "मुख्य नेविगेशन"
+    },
+    "pagination": {
+      "page": "पृष्ठ {{ page }}",
+      "next": "अगला पृष्ठ",
+      "previous": "पिछला पृष्ठ",
+      "label": "पृष्ठ सूची"
+    },
+    "search": {
+      "search": "खोजें",
+      "placeholder": "स्टोर में खोजें",
+      "results": {
+        "one": "\"{{ terms }}\" के लिए {{ count }} परिणाम",
+        "other": "\"{{ terms }}\" के लिए {{ count }} परिणाम"
+      },
+      "no_results": "\"{{ terms }}\" के लिए कुछ नहीं मिला",
+      "types": {
+        "label": "परिणाम का प्रकार",
+        "all": "सभी",
+        "product": "उत्पाद",
+        "article": "जर्नल",
+        "page": "पृष्ठ"
+      },
+      "collections": "संग्रह",
+      "see_all": "\"{{ terms }}\" के सभी परिणाम देखें"
+    },
+    "404": {
+      "title": "पृष्ठ नहीं मिला",
+      "text": "आप जिस पृष्ठ को ढूँढ रहे थे वह मौजूद नहीं है।",
+      "link": "मुखपृष्ठ पर वापस जाएँ"
+    },
+    "password": {
+      "title": "जल्द ही खुल रहा है",
+      "label": "पासवर्ड",
+      "submit": "प्रवेश करें"
+    },
+    "breadcrumbs": {
+      "home": "होम"
+    },
+    "language": {
+      "label": "भाषा",
+      "apply": "बदलें"
+    }
+  },
+  "customer": {
+    "account": {
+      "title": "खाता",
+      "greeting": "नमस्ते, {{ name }}"
+    }
+  },
+  "cart": {
+    "general": {
+      "title": "आपकी कार्ट",
+      "item_count": {
+        "one": "{{ count }} वस्तु",
+        "other": "{{ count }} वस्तुएँ"
+      },
+      "empty": "आपकी कार्ट खाली है।",
+      "continue": "खरीदारी जारी रखें",
+      "subtotal": "उप-योग",
+      "checkout": "चेकआउट",
+      "taxes_and_shipping": "कर शामिल। शिपिंग चेकआउट पर तय होगी।",
+      "view_cart": "कार्ट देखें",
+      "remove": "हटाएँ",
+      "added": "कार्ट में जोड़ा गया: {{ title }}",
+      "updated": "कार्ट अपडेट हुई, {{ count }} वस्तुएँ",
+      "decrease": "{{ title }} की मात्रा घटाएँ",
+      "increase": "{{ title }} की मात्रा बढ़ाएँ"
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "कार्ट में जोड़ें",
+      "sold_out": "बिक चुका",
+      "quantity": "मात्रा",
+      "vendor": "{{ vendor }} द्वारा",
+      "on_sale": "सेल",
+      "tax_note": "कर शामिल, शिपिंग चेकआउट पर",
+      "in_stock": "स्टॉक में, 2 से 3 दिन में भेजा जाएगा",
+      "details": "विवरण",
+      "shipping": "शिपिंग और वापसी",
+      "specifications": "विशिष्टताएँ",
+      "care": "देखभाल",
+      "measurements": "माप और वज़न"
+    },
+    "specs": {
+      "material": "सामग्री",
+      "weave": "बुनाई",
+      "craft": "शिल्प",
+      "origin": "उद्गम",
+      "series": "श्रृंखला"
+    }
+  },
+  "collections": {
+    "general": {
+      "products_count": {
+        "one": "{{ count }} उत्पाद",
+        "other": "{{ count }} उत्पाद"
+      },
+      "empty": "यहाँ अभी कोई उत्पाद नहीं है।"
+    },
+    "sorting": {
+      "title": "क्रमबद्ध करें",
+      "apply": "लागू करें"
+    }
+  },
+  "blogs": {
+    "article": {
+      "by": "{{ author }} द्वारा"
+    }
+  },
+  "sections": {
+    "collection_list": {
+      "view_all": "सभी संग्रह"
+    },
+    "featured_collection": {
+      "view_all": "सभी देखें"
+    },
+    "newsletter": {
+      "email": "ईमेल पता",
+      "placeholder": "you@example.com",
+      "success": "धन्यवाद, आप सूची में हैं।"
+    }
+  }
+}

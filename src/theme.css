@@ -44,5 +44,7 @@
   #CartDrawer[open] { translate: 0 0; @starting-style { translate: 100% 0; } }
   #CartDrawer::backdrop { transition: opacity 0.3s ease, overlay 0.3s allow-discrete, display 0.3s allow-discrete; opacity: 0; }
   #CartDrawer[open]::backdrop { opacity: 1; @starting-style { opacity: 0; } }
+  #SearchDialog { transition: translate 0.25s ease, overlay 0.25s allow-discrete, display 0.25s allow-discrete; translate: 0 -100%; }
+  #SearchDialog[open] { translate: 0 0; @starting-style { translate: 0 -100%; } }
   .icon-btn { @apply inline-flex items-center justify-center w-11 h-11 rounded-full relative hover:bg-ground-2; }
 }

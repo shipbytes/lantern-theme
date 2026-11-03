@@ -194,3 +194,52 @@ class CartDrawer extends HTMLElement {
   }
 }
 customElements.define('cart-drawer', CartDrawer);
+
+// ---- <predictive-search>: the header's search dialog, results from /search/suggest ----
+class PredictiveSearch extends HTMLElement {
+  connectedCallback() {
+    this.dialog = this.querySelector('dialog');
+    this.input = this.querySelector('input[type="search"]');
+    this.results = this.querySelector('#PredictiveResults');
+    this.querySelector('[data-search-open]').addEventListener('click', (event) => {
+      event.preventDefault();
+      this.dialog.showModal();
+      this.input.focus();
+    });
+    this.querySelector('[data-search-close]').addEventListener('click', () => this.dialog.close());
+    this.dialog.addEventListener('click', (event) => {
+      if (event.target === this.dialog) this.dialog.close();
+    });
+    let timer;
+    this.input.addEventListener('input', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => this.search(), 250);
+    });
+  }
+
+  async search() {
+    const q = this.input.value.trim();
+    this.controller?.abort();
+    if (q.length < 2) {
+      this.results.replaceChildren();
+      this.input.setAttribute('aria-expanded', 'false');
+      return;
+    }
+    this.controller = new AbortController();
+    const url = `${this.dataset.url}?q=${encodeURIComponent(q)}&section_id=predictive-search&resources[type]=product,collection,article&resources[limit]=4&resources[options][unavailable_products]=last`;
+    try {
+      const html = await (await fetch(url, { signal: this.controller.signal })).text();
+      const section = parse(html).querySelector('#shopify-section-predictive-search');
+      this.results.replaceChildren(...section.children);
+      this.input.setAttribute('aria-expanded', 'true');
+    } catch (error) {
+      if (error.name !== 'AbortError') throw error;
+    }
+  }
+}
+customElements.define('predictive-search', PredictiveSearch);
+
+// ---- Language selector: the localization form submits itself on change ----
+document.querySelectorAll('[data-localization-select]').forEach((select) => {
+  select.addEventListener('change', () => select.form.requestSubmit());
+});

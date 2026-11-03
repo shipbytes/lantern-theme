@@ -23,9 +23,30 @@
     </nav>
 
     <div class="flex items-center gap-1">
-      <a href="{{ routes.search_url }}" class="icon-btn" aria-label="{{ 'general.search.search' | t }}">{% render 'icon', name: 'search' %}</a>
+      <predictive-search data-url="{{ routes.predictive_search_url }}">
+        <a href="{{ routes.search_url }}" class="icon-btn" data-search-open aria-label="{{ 'general.search.search' | t }}">{% render 'icon', name: 'search' %}</a>
+        <dialog id="SearchDialog" class="fixed inset-x-0 top-0 bottom-auto m-0 w-full max-w-none max-h-[90dvh] overflow-y-auto bg-ground text-ink p-0 shadow-xl backdrop:bg-ink/40" aria-label="{{ 'general.search.search' | t }}">
+          <div class="wrap py-6 flex flex-col gap-5">
+            <form action="{{ routes.search_url }}" method="get" role="search" class="flex gap-3">
+              <label for="SearchInput" class="sr-only">{{ 'general.search.search' | t }}</label>
+              <input id="SearchInput" type="search" name="q" autocomplete="off" placeholder="{{ 'general.search.placeholder' | t }}" class="flex-1 min-h-12 rounded-full border border-line bg-white px-5" aria-controls="PredictiveResults" aria-expanded="false">
+              <input type="hidden" name="options[prefix]" value="last">
+              <button type="submit" class="btn">{{ 'general.search.search' | t }}</button>
+              <button type="button" class="icon-btn shrink-0" data-search-close aria-label="{{ 'accessibility.close' | t }}">{% render 'icon', name: 'close' %}</button>
+            </form>
+            <div id="PredictiveResults" aria-live="polite"></div>
+          </div>
+        </dialog>
+      </predictive-search>
       {%- if shop.customer_accounts_enabled -%}
-        <a href="{{ routes.account_url }}" class="icon-btn" aria-label="{{ 'customer.account.title' | t }}">{% render 'icon', name: 'account' %}</a>
+        {%- liquid
+          if customer
+            assign account_label = 'customer.account.greeting' | t: name: customer.first_name
+          else
+            assign account_label = 'customer.account.title' | t
+          endif
+        -%}
+        <a href="{{ routes.account_url }}" class="icon-btn" aria-label="{{ account_label }}" title="{{ account_label }}">{% render 'icon', name: 'account' %}</a>
       {%- endif -%}
       <a href="{{ routes.cart_url }}" class="icon-btn" data-cart-link aria-label="{{ 'cart.general.title' | t }}, {{ 'cart.general.item_count' | t: count: cart.item_count }}">
         {% render 'icon', name: 'cart' %}

@@ -1,0 +1,51 @@
+{%- comment -%}
+  Rendered only through the Section Rendering API:
+  GET /search/suggest?q=…&section_id=predictive-search&resources[type]=product,collection,article
+  The predictive_search object exists only on that route. The header's <predictive-search>
+  element drops the result into its dialog.
+{%- endcomment -%}
+{%- liquid
+  assign products = predictive_search.resources.products
+  assign collections = predictive_search.resources.collections
+  assign articles = predictive_search.resources.articles
+  assign terms = predictive_search.terms | escape
+-%}
+{%- if predictive_search.performed -%}
+  {%- if products.size == 0 and collections.size == 0 and articles.size == 0 -%}
+    <p class="text-ink-2 py-2">{{ 'general.search.no_results' | t: terms: terms }}</p>
+  {%- else -%}
+    <div class="grid gap-8 md:grid-cols-[3fr_1fr]">
+      {%- if products.size > 0 -%}
+        <div>
+          <p class="eyebrow mb-3">{{ 'general.search.types.product' | t }}</p>
+          <ul class="grid grid-cols-2 md:grid-cols-4 gap-4" role="list">
+            {%- for product in products -%}<li>{% render 'product-card', product: product %}</li>{%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+      <div class="flex flex-col gap-6">
+        {%- if collections.size > 0 -%}
+          <div>
+            <p class="eyebrow mb-2">{{ 'general.search.collections' | t }}</p>
+            <ul class="flex flex-col gap-1" role="list">
+              {%- for collection in collections -%}<li><a href="{{ collection.url }}" class="font-medium hover:text-accent">{{ collection.title }}</a></li>{%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+        {%- if articles.size > 0 -%}
+          <div>
+            <p class="eyebrow mb-2">{{ 'general.search.types.article' | t }}</p>
+            <ul class="flex flex-col gap-1" role="list">
+              {%- for article in articles -%}<li><a href="{{ article.url }}" class="font-medium hover:text-accent">{{ article.title }}</a></li>{%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+        <a href="{{ routes.search_url }}?q={{ predictive_search.terms | url_encode }}&options[prefix]=last" class="font-semibold underline underline-offset-4 hover:text-accent">{{ 'general.search.see_all' | t: terms: terms }}</a>
+      </div>
+    </div>
+  {%- endif -%}
+{%- endif -%}
+
+{% schema %}
+{ "name": "t:sections.predictive_search.name", "settings": [] }
+{% endschema %}

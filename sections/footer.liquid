@@ -26,7 +26,22 @@
   </div>
   <div class="wrap border-t border-ink-2 py-5 flex flex-wrap justify-between gap-4 text-[13px] text-ground-2">
     <span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}</span>
-    <span>{{ localization.country.currency.iso_code }} {{ localization.country.currency.symbol }} &middot; {{ localization.language.endonym_name }}</span>
+    <div class="flex items-center gap-3">
+      <span>{{ localization.country.currency.iso_code }} {{ localization.country.currency.symbol }}</span>
+      {%- if localization.available_languages.size > 1 -%}
+        {%- form 'localization', id: 'LocalizationForm', class: 'flex items-center gap-2' -%}
+          <label for="LocaleSelect" class="sr-only">{{ 'general.language.label' | t }}</label>
+          <select id="LocaleSelect" name="locale_code" class="min-h-10 rounded-full bg-transparent border border-ink-2 px-3 text-[13px] text-ground" data-localization-select>
+            {%- for language in localization.available_languages -%}
+              <option value="{{ language.iso_code }}" lang="{{ language.iso_code }}" {% if language.iso_code == localization.language.iso_code %}selected{% endif %}>{{ language.endonym_name | capitalize }}</option>
+            {%- endfor -%}
+          </select>
+          <noscript><button type="submit" class="btn btn-ghost min-h-10 text-ground border-ground">{{ 'general.language.apply' | t }}</button></noscript>
+        {%- endform -%}
+      {%- else -%}
+        <span>&middot; {{ localization.language.endonym_name }}</span>
+      {%- endif -%}
+    </div>
   </div>
 </footer>
 

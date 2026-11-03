@@ -1,32 +1,98 @@
+{%- comment -%}
+  The search page. `search.terms` is the query, `search.performed` whether there was one,
+  `search.types` the object types searched (all three unless ?type= narrowed it), and
+  `search.results` the mixed list, each with an object_type of product, article or page.
+{%- endcomment -%}
+{%- liquid
+  assign terms = search.terms | escape
+  assign q = search.terms | url_encode
+  assign only = ''
+  if search.types.size == 1
+    assign only = search.types.first
+  endif
+-%}
 <section class="wrap py-8 flex flex-col gap-6">
   <h1 class="text-[40px] font-extrabold">{{ 'general.search.search' | t }}</h1>
   <form action="{{ routes.search_url }}" method="get" role="search" class="flex gap-3 max-w-xl">
     <label for="Search" class="sr-only">{{ 'general.search.search' | t }}</label>
-    <input id="Search" type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'general.search.placeholder' | t }}" class="flex-1 min-h-12 rounded-full border border-line bg-white px-5">
+    <input id="Search" type="search" name="q" value="{{ terms }}" placeholder="{{ 'general.search.placeholder' | t }}" class="flex-1 min-h-12 rounded-full border border-line bg-white px-5">
     <input type="hidden" name="options[prefix]" value="last">
+    {%- if only != blank -%}<input type="hidden" name="type" value="{{ only }}">{%- endif -%}
     <button type="submit" class="btn">{{ 'general.search.search' | t }}</button>
   </form>
+
   {%- if search.performed -%}
+    <div class="flex flex-wrap items-center gap-2" role="group" aria-label="{{ 'general.search.types.label' | t }}">
+      {%- assign chips = 'all,product,article,page' | split: ',' -%}
+      {%- for chip in chips -%}
+        {%- liquid
+          if chip == 'all'
+            assign href = routes.search_url | append: '?q=' | append: q | append: '&options[prefix]=last'
+            assign active = false
+            if only == blank
+              assign active = true
+            endif
+          else
+            assign href = routes.search_url | append: '?q=' | append: q | append: '&options[prefix]=last&type=' | append: chip
+            assign active = false
+            if only == chip
+              assign active = true
+            endif
+          endif
+          case chip
+            when 'product'
+              assign label = 'general.search.types.product' | t
+            when 'article'
+              assign label = 'general.search.types.article' | t
+            when 'page'
+              assign label = 'general.search.types.page' | t
+            else
+              assign label = 'general.search.types.all' | t
+          endcase
+        -%}
+        <a href="{{ href }}" class="min-h-10 px-4 inline-flex items-center rounded-full border text-sm font-medium {% if active %}bg-ink text-ground border-ink{% else %}bg-white border-line hover:border-ink{% endif %}" {% if active %}aria-current="true"{% endif %}>{{ label }}</a>
+      {%- endfor -%}
+    </div>
+
     {%- if search.results_count == 0 -%}
-      <p class="text-ink-2">{{ 'general.search.no_results' | t: terms: search.terms }}</p>
+      <p class="text-ink-2">{{ 'general.search.no_results' | t: terms: terms }}</p>
     {%- else -%}
-      <p class="text-sm text-ink-2">{{ 'general.search.results' | t: count: search.results_count, terms: search.terms }}</p>
-      {%- paginate search.results by 12 -%}
-        <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" role="list">
+      <p class="text-sm text-ink-2">{{ 'general.search.results' | t: count: search.results_count, terms: terms }}</p>
+      {%- paginate search.results by section.settings.per_page -%}
+        <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10" role="list">
           {%- for item in search.results -%}
             <li>
-              {%- if item.object_type == 'product' -%}
-                {% render 'product-card', product: item %}
-              {%- else -%}
-                <a href="{{ item.url }}" class="block py-3 border-b border-line"><span class="eyebrow">{{ item.object_type }}</span><h3 class="font-semibold mt-1">{{ item.title }}</h3></a>
-              {%- endif -%}
+              {%- case item.object_type -%}
+                {%- when 'product' -%}
+                  {% render 'product-card', product: item %}
+                {%- when 'article' -%}
+                  <a href="{{ item.url }}" class="block group">
+                    <div class="aspect-card rounded-[14px] overflow-hidden bg-ground-2">{%- if item.image -%}{{ item.image | image_url: width: 800 | image_tag: class: 'w-full h-full object-cover', loading: 'lazy' }}{%- endif -%}</div>
+                    <span class="eyebrow block mt-3">{{ 'general.search.types.article' | t }}</span>
+                    <h3 class="font-semibold mt-1 group-hover:text-accent">{{ item.title }}</h3>
+                    <p class="text-sm text-ink-2 mt-1">{{ item.published_at | date: format: 'date' }}</p>
+                  </a>
+                {%- else -%}
+                  <a href="{{ item.url }}" class="block group">
+                    <div class="aspect-card rounded-[14px] bg-ground-2 flex items-end p-5"><span class="font-heading font-bold text-xl">{{ item.title }}</span></div>
+                    <span class="eyebrow block mt-3">{{ 'general.search.types.page' | t }}</span>
+                    <h3 class="font-semibold mt-1 group-hover:text-accent">{{ item.title }}</h3>
+                  </a>
+              {%- endcase -%}
             </li>
           {%- endfor -%}
         </ul>
+        {% render 'pagination', paginate: paginate %}
       {%- endpaginate -%}
     {%- endif -%}
   {%- endif -%}
 </section>
+
 {% schema %}
-{ "name": "Search", "settings": [] }
+{
+  "name": "Search",
+  "settings": [
+    { "type": "range", "id": "per_page", "label": "Results per page", "min": 8, "max": 48, "step": 4, "default": 16 }
+  ]
+}
 {% endschema %}

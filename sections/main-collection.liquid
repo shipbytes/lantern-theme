@@ -1,6 +1,6 @@
 {%- comment -%}
   The collection page. Part 2: sorting through the sort_by parameter the way Shopify expects,
-  a count, the grid of product cards and pagination. Filters come in part 5.
+  a count, the grid of product cards and pagination (the snippet, since part 5).
 {%- endcomment -%}
 {%- liquid
   assign sort_by = collection.sort_by | default: collection.default_sort_by
@@ -44,19 +44,7 @@
         {%- endfor -%}
       </ul>
     {%- endif -%}
-    {%- if paginate.pages > 1 -%}
-      <nav class="flex justify-center gap-1 pt-4" aria-label="{{ 'general.pagination.page' | t: page: paginate.current_page }}">
-        {%- for part in paginate.parts -%}
-          {%- if part.is_link -%}
-            <a href="{{ part.url }}" class="inline-flex items-center justify-center min-w-11 h-11 rounded-full font-semibold text-sm hover:bg-ground-2">{{ part.title }}</a>
-          {%- elsif part.title == paginate.current_page -%}
-            <span aria-current="page" class="inline-flex items-center justify-center min-w-11 h-11 rounded-full font-semibold text-sm bg-ink text-ground">{{ part.title }}</span>
-          {%- else -%}
-            <span class="inline-flex items-center justify-center min-w-11 h-11 text-sm">{{ part.title }}</span>
-          {%- endif -%}
-        {%- endfor -%}
-      </nav>
-    {%- endif -%}
+    {% render 'pagination', paginate: paginate %}
   {%- endpaginate -%}
 </section>
 

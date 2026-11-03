@@ -102,6 +102,60 @@
         <summary class="list-none cursor-pointer py-4 font-semibold flex justify-between items-center">{{ 'products.product.details' | t }}<span class="group-open:rotate-180 transition-transform">{% render 'icon', name: 'chevron' %}</span></summary>
         <div class="prose prose-sm max-w-none text-ink-2 pb-4">{{ product.description }}</div>
       </details>
+      {%- liquid
+        # Part 5: metafields. product.metafields.<namespace>.<key> is a metafield object;
+        # .value is the typed value (a string, or parsed JSON for the json type) and
+        # metafield_tag renders it as HTML suited to its type.
+        assign specs = product.metafields.saanjh
+        assign spec_keys = 'material,weave,craft,origin,series' | split: ','
+        assign has_specs = false
+        for key in spec_keys
+          assign v = specs[key].value
+          if v != blank and v != '—'
+            assign has_specs = true
+          endif
+        endfor
+        if specs.measurements.value.size > 0
+          assign has_specs = true
+        endif
+      -%}
+      {%- if has_specs -%}
+        <details class="border-t border-line group">
+          <summary class="list-none cursor-pointer py-4 font-semibold flex justify-between items-center">{{ 'products.product.specifications' | t }}<span class="group-open:rotate-180 transition-transform">{% render 'icon', name: 'chevron' %}</span></summary>
+          <dl class="grid grid-cols-[auto_1fr] gap-x-8 gap-y-2 text-sm pb-4">
+            {%- for key in spec_keys -%}
+              {%- assign v = specs[key].value -%}
+              {%- if v != blank and v != '—' -%}
+                {%- liquid
+                  # Theme Check verifies translation keys it can read, so keys stay literal.
+                  case key
+                    when 'material'
+                      assign label = 'products.specs.material' | t
+                    when 'weave'
+                      assign label = 'products.specs.weave' | t
+                    when 'craft'
+                      assign label = 'products.specs.craft' | t
+                    when 'origin'
+                      assign label = 'products.specs.origin' | t
+                    else
+                      assign label = 'products.specs.series' | t
+                  endcase
+                -%}
+                <dt class="text-ink-2">{{ label }}</dt><dd>{{ v }}</dd>
+              {%- endif -%}
+            {%- endfor -%}
+            {%- for row in specs.measurements.value -%}
+              <dt class="text-ink-2">{% if forloop.first %}{{ 'products.product.measurements' | t }}{% endif %}</dt><dd>{{ row.name }} &middot; {{ row.value }}</dd>
+            {%- endfor -%}
+          </dl>
+        </details>
+      {%- endif -%}
+      {%- if specs.care != blank -%}
+        <details class="border-t border-line group">
+          <summary class="list-none cursor-pointer py-4 font-semibold flex justify-between items-center">{{ 'products.product.care' | t }}<span class="group-open:rotate-180 transition-transform">{% render 'icon', name: 'chevron' %}</span></summary>
+          <div class="text-sm text-ink-2 pb-4 leading-relaxed">{{ specs.care | metafield_tag }}</div>
+        </details>
+      {%- endif -%}
       {%- if section.settings.shipping_text != blank -%}
         <details class="border-t border-line group">
           <summary class="list-none cursor-pointer py-4 font-semibold flex justify-between items-center">{{ 'products.product.shipping' | t }}<span class="group-open:rotate-180 transition-transform">{% render 'icon', name: 'chevron' %}</span></summary>
